@@ -10,6 +10,13 @@ body {
   padding: 20px;
 }
 
+/* Responsive padding for smaller screens */
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+}
+
 .live-scores {
   background: var(--secondary);
   color: white;
@@ -23,6 +30,20 @@ body {
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid rgba(255,255,255,0.2);
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect on each match row */
+.match:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive stacking on small screens */
+@media (max-width: 600px) {
+  .match {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 .ad-unit {
