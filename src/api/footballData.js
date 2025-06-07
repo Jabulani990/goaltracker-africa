@@ -1,4 +1,4 @@
-const API_KEY = 'YOUR_API_KEY'; // Get from football-data.org
+const API_KEY = '735f4252933a4793bae38856151a8ac8'; // Get from football-data.org
 
 export const fetchLiveMatches = async () => {
   try {
