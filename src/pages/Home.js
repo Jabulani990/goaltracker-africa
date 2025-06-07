@@ -1,8 +1,8 @@
 export default function Home() {
   return (
-    <div>
-      <h1>GoalTracker Africa</h1>
-      <p>Coming soon with live scores!</p>
+    <div className="home">
+      <h1>Welcome to GoalTracker Africa</h1>
+      <p>Live scores, news, and stats coming soon!</p>
     </div>
   );
 }
