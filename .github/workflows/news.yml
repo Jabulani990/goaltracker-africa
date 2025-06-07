@@ -1,0 +1,17 @@
+name: Update News
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          # Add your news scraping script here
+          echo "News updated $(date)" > news.log
+          git config --global user.name "GitHub Bot"
+          git config --global user.email "bot@noreply.github.com"
+          git add .
+          git commit -m "Auto-update news"
+          git push
