@@ -1,20 +1,26 @@
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f5f5f5;
-}
-
-.home {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.ad-leaderboard {
-  background: #eee;
+.live-scores {
+  background: #E03C31;
+  color: white;
   padding: 1rem;
-  margin: 2rem auto;
-  text-align: center;
+  margin: 1rem 0;
+  border-radius: 8px;
+}
+
+.matches {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+.match {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.match strong {
+  font-weight: 700;
+  color: #FFD700;
 }
