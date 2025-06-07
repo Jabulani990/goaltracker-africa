@@ -1,4 +1,4 @@
-const API_KEY = '735f4252933a4793bae38856151a8ac8'; // Get from football-data.org
+const API_KEY = process.env.REACT_APP_FOOTBALL_API_KEY;
 
 export const fetchLiveMatches = async () => {
   try {
@@ -13,6 +13,15 @@ export const fetchLiveMatches = async () => {
   }
 };
 
-export const fetchStandings = async () => {
-  // Similar implementation for standings
+export const fetchStandings = async (competitionId = 'PL') => {
+  try {
+    const response = await fetch(`https://api.football-data.org/v4/competitions/${competitionId}/standings`, {
+      headers: { 'X-Auth-Token': API_KEY }
+    });
+    const data = await response.json();
+    return data.standings;
+  } catch (error) {
+    console.error("Error fetching standings:", error);
+    return [];
+  }
 };
