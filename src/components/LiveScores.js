@@ -1,22 +1,33 @@
+import { useEffect, useState } from 'react';
+import { fetchLiveMatches } from '../api/footballData';
+
 export default function LiveScores() {
-  const matches = [
-    { home: "Kaizer Chiefs", away: "Orlando Pirates", score: "1-1", minute: "67'" },
-    { home: "Mamelodi Sundowns", away: "SuperSport Utd", score: "2-0", minute: "HT" }
-  ];
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchLiveMatches()
+      .then(data => {
+        setMatches(data);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className="live-scores">
       <h3>⚽ LIVE MATCHES</h3>
-      <div className="matches">
-        {matches.map((match, index) => (
-          <div key={index} className="match">
-            <span>{match.home}</span>
-            <strong>{match.score}</strong>
-            <span>{match.away}</span>
-            <small>{match.minute}</small>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        matches.map(match => (
+          <div key={match.id} className="match">
+            <span>{match.homeTeam.shortName}</span>
+            <strong>{match.score.fullTime.home} - {match.score.fullTime.away}</strong>
+            <span>{match.awayTeam.shortName}</span>
+            <small>{match.minute}'</small>
           </div>
-        ))}
-      </div>
+        ))
+      )}
     </div>
   );
 }
