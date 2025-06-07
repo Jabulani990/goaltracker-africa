@@ -7,11 +7,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          # Add your news scraping script here
+
+      - name: Run news update script
+        run: |
+          # Replace this with your actual news update logic
           echo "News updated $(date)" > news.log
+
+      - name: Commit and push changes if any
+        run: |
           git config --global user.name "GitHub Bot"
           git config --global user.email "bot@noreply.github.com"
-          git add .
-          git commit -m "Auto-update news"
-          git push
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "Auto-update news"
+            git push
+          else
+            echo "No changes to commit"
+          fi
