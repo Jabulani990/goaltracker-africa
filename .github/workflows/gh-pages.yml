@@ -24,7 +24,6 @@ jobs:
         uses: actions/setup-node@v4 # <<< UPGRADE TO V4
         with:
           node-version: '18' # Ensure this matches your project's requirement (e.g., '20')
-          cache: 'npm' # <<< ADD THIS FOR CACHING
 
       - name: Install Dependencies
         run: npm install
