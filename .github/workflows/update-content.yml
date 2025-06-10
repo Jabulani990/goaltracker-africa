@@ -4,18 +4,33 @@ on:
     - cron: '0 */6 * * *' # Every 6 hours
   workflow_dispatch:
 
+# --- ADD THIS SECTION ---
+permissions:
+  contents: write # This grants permission to push changes to the repository
+# ------------------------
+
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        # It's good practice to ensure you check out the full history
+        # if you are performing git operations like commit/push.
+        # This is usually the default, but good to keep in mind.
+        with:
+          fetch-depth: 0 # Ensures full history for git operations
+
       - name: Update news and scores
         run: |
           echo "Updating content..."
           # Add your update scripts here
-          date > last-updated.txt
+          date > last-updated.txt # Example: writes current date to a file
+          # Ensure any other content update scripts that modify files are here
+
           git config --global user.name "GitHub Bot"
           git config --global user.email "bot@noreply.github.com"
+          
           git add .
           git commit -m "Auto-content update"
+          # The git push command will now succeed because of the 'contents: write' permission
           git push
