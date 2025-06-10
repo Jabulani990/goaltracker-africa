@@ -1,3 +1,5 @@
+// Dummy comment to force re-sync of Teams.js
+
 export default function Teams() {
   return (
     <div className="teams-page">
@@ -6,3 +8,4 @@ export default function Teams() {
     </div>
   );
 }
+// End of dummy comment
