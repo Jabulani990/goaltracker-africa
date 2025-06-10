@@ -1,24 +1,30 @@
-name: Deploy React App to GitHub Pages
+name: Deploy React App to GitHub Pages # Or whatever the actual name is for gh-pages.yml
 
 on:
+  # Your existing triggers for gh-pages.yml
   push:
     branches:
-      - main
+      - main # Or the branch you want to deploy from
 
 permissions:
   contents: write
+  pages: write    # Crucial for GitHub Pages deployments
+  id-token: write # Required for OIDC-based GitHub Pages deployments
 
 jobs:
-  build:
+  build-and-deploy: # A descriptive job name for gh-pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # <<< UPGRADE TO V4 (good practice)
+        with:
+          fetch-depth: 0 # Good for full Git history if you do more than just build/deploy
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4 # <<< UPGRADE TO V4
         with:
-          node-version: '18'
+          node-version: '18' # Ensure this matches your project's requirement (e.g., '20')
+          cache: 'npm' # <<< ADD THIS FOR CACHING
 
       - name: Install Dependencies
         run: npm install
@@ -27,7 +33,8 @@ jobs:
         run: npm run build
 
       - name: Deploy to GitHub Pages
+        id: deployment # Add an ID if you plan to use 'environment' later
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./build # Ensure this is the correct build output directory
