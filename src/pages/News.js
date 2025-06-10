@@ -1,4 +1,4 @@
-import React, { useEffect, useState } => 'react';
+import React, { useEffect, useState } from 'react'; // <<< CORRECTED LINE
 import axios from 'axios';
 import '../styles/news.css'; // Make sure you have this CSS file if you want specific news styles
 
