@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react'; // <<< CORRECTED LINE
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import '../styles/news.css'; // Make sure you have this CSS file if you want specific news styles
+import '../styles/news.css';
 
 export default function News() {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Your actual API token from football-data.org
   const FOOTBALL_DATA_API_TOKEN = '735f4252933a4793bae38856151a8ac8';
 
   useEffect(() => {
@@ -16,12 +15,11 @@ export default function News() {
         setLoading(true);
         setError(null);
 
-        // Original API URL for fetching upcoming matches
         const originalApiUrl = 'https://api.football-data.org/v4/matches?status=SCHEDULED&limit=5';
 
-        // --- UPDATED: Use corsproxy.io to bypass CORS issues ---
-        const apiUrl = `https://corsproxy.io/?${encodeURIComponent(originalApiUrl)}`;
-        // ---------------------------------------------------
+        // --- UPDATED: Use api.allorigins.win as the CORS proxy ---
+        const apiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalApiUrl)}`;
+        // --------------------------------------------------------
 
         const response = await axios.get(apiUrl, {
           headers: {
@@ -29,7 +27,9 @@ export default function News() {
           }
         });
 
-        setMatches(response.data.matches || []);
+        // The response structure from allorigins.win is slightly different:
+        // It wraps the actual API response inside a 'contents' field.
+        setMatches(response.data.contents.matches || []); // Access 'contents.matches'
 
       } catch (err) {
         console.error("Error fetching football data:", err);
@@ -37,7 +37,7 @@ export default function News() {
           console.error("API Response Error:", err.response.data);
           setError(`API Error: ${err.response.status} - ${err.response.data.message || 'Unknown error'}`);
         } else if (err.request) {
-          setError("Network Error: No response from API (CORS or network issue)."); // Added more detail
+          setError("Network Error: No response from API (CORS or network issue).");
         } else {
           setError("Request Setup Error: " + err.message);
         }
@@ -48,7 +48,7 @@ export default function News() {
     };
 
     fetchFootballData();
-  }, []); // Empty dependency array means this runs once on component mount
+  }, []);
 
   if (loading) {
     return (
