@@ -13,3 +13,4 @@ export default function Navbar() {
     </nav>
   );
 }
+// Ensuring Navbar.js integrity
