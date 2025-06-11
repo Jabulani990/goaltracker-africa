@@ -7,68 +7,58 @@ export default function News() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Your Sportmonks API token
-  const SPORTMONKS_API_TOKEN = 'vSUnbStuUSXetWYLJzJxMqQA8dAdDrY8d1DiPRb1vlx6JxVt8Ug24q7xgtE1';
-  // League ID for Superliga (Danish League)
-  const TARGET_LEAGUE_ID = 271; // Superliga ID
+  // No API token needed here anymore, as the Netlify function handles it securely
+  // REMOVE OR COMMENT OUT THIS LINE if it's still there
+  // const FOOTBALL_DATA_API_TOKEN = '735f4252933a4793bae38856151a8ac8'; 
 
   useEffect(() => {
-    const fetchSportmonksData = async () => {
+    const fetchFootballData = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Get today's date and a date in the near future (e.g., 2 weeks from now)
-        const today = new Date();
-        const twoWeeksLater = new Date();
-        twoWeeksLater.setDate(today.getDate() + 14);
+        // --- UPDATED: Call your Netlify function instead of the direct API ---
+        // The path to your function will be /.netlify/functions/football-data
+        // You can still pass parameters like status, limit, etc., as query strings to your function.
+        // Your Netlify function will then forward these to football-data.org
+        const netlifyFunctionUrl = `/.netlify/functions/football-data?status=SCHEDULED&limit=5`;
+        // If you later want specific competitions (e.g., PSL if available on your plan),
+        // you'd pass the competition ID here:
+        // `/.netlify/functions/football-data?status=SCHEDULED&limit=5&competition=2001` // Example Champions League
+        // ------------------------------------------------------------------
 
-        const formatDate = (date) => date.toISOString().split('T')[0]; // YYYY-MM-DD
+        const response = await axios.get(netlifyFunctionUrl);
 
-        const startDate = formatDate(today);
-        const endDate = formatDate(twoWeeksLater);
-
-        // Sportmonks API URL to fetch fixtures within a date range
-        // We'll filter by league ID in the frontend.
-        const apiUrl = `https://api.sportmonks.com/v3/football/fixtures/between/${startDate}/${endDate}?api_token=${SPORTMONKS_API_TOKEN}&include=league,localTeam,visitorTeam`;
-
-        const response = await axios.get(apiUrl);
-
-        // Sportmonks response for fixtures is typically `response.data.data`
-        const allFixtures = response.data.data || [];
-
-        // Filter the fixtures to only include those from the target league (Superliga)
-        const filteredMatches = allFixtures.filter(
-          (fixture) => fixture.league_id === TARGET_LEAGUE_ID && fixture.status_id === 1 // status_id 1 is 'Played' or 'Finished' depending on period
-        );
-        // Note: You may need to adjust the status_id or filter by 'type' for "upcoming" events
-
-        setMatches(filteredMatches);
+        // The response from your Netlify function will be the raw data from football-data.org
+        setMatches(response.data.matches || []); // Access 'matches' property of the response data
 
       } catch (err) {
-        console.error("Error fetching Sportmonks data:", err);
+        console.error("Error fetching football data via Netlify function:", err);
+        // Enhanced error message for debugging Netlify function issues
+        let errorMessage = "Failed to load news. Please try again later.";
         if (err.response) {
-          console.error("API Response Error:", err.response.data);
-          setError(`API Error: ${err.response.status} - ${err.response.data.message || 'Unknown error'}`);
+            console.error("Netlify Function Response Error:", err.response.data);
+            errorMessage = `Error from API Proxy: ${err.response.status} - ${err.response.data.message || JSON.stringify(err.response.data) || 'Unknown error'}`;
         } else if (err.request) {
-          setError("Network Error: No response from API (CORS or network issue).");
+            errorMessage = "Network Error: No response from proxy function.";
         } else {
-          setError("Request Setup Error: " + err.message);
+            errorMessage = "Request Setup Error: " + err.message;
         }
+        setError(errorMessage);
         setMatches([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSportmonksData();
-  }, []);
+    fetchFootballData();
+  }, []); // Empty dependency array means this runs once on component mount
 
   if (loading) {
     return (
       <div className="news-page">
         <h1>📰 Football News</h1>
-        <p>Loading latest match data from Sportmonks...</p>
+        <p>Loading latest match data...</p>
       </div>
     );
   }
@@ -78,25 +68,27 @@ export default function News() {
       <div className="news-page">
         <h1>📰 Football News</h1>
         <p style={{ color: 'red' }}>{error}</p>
-        <p>Could not fetch football data. Check console for details. (Sportmonks API)</p>
+        <p>Check browser console for detailed error, or verify Netlify function deployment and API key.</p>
       </div>
     );
   }
 
   return (
     <div className="news-page">
-      <h1>📰 Upcoming Superliga Matches</h1>
+      <h1>📰 Upcoming Matches</h1>
       {matches.length === 0 ? (
-        <p>No upcoming Superliga matches available in the next 2 weeks. Please check back later or adjust date range.</p>
+        <p>No upcoming matches available at the moment. Please check back later or adjust your API query.</p>
       ) : (
         <div className="match-list">
           {matches.map((match) => (
             <div key={match.id} className="match-item">
-              <h3>{match.localTeam.name} vs. {match.visitorTeam.name}</h3>
-              <p>League: {match.league.name}</p>
-              <p>Date: {new Date(match.starting_at.date_time).toLocaleString()}</p>
-              <p>Venue: {match.venue?.name || 'N/A'}</p>
-              {/* You can add more details like score if available for finished matches based on status_id */}
+              <h3>{match.homeTeam.name} vs. {match.awayTeam.name}</h3>
+              <p>Competition: {match.competition.name}</p>
+              <p>Date: {new Date(match.utcDate).toLocaleString()}</p>
+              <p>Status: {match.status}</p>
+              {match.score && match.status === 'FINISHED' && (
+                <p>Score: {match.score.fullTime.home} - {match.score.fullTime.away}</p>
+              )}
             </div>
           ))}
         </div>
