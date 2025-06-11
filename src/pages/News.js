@@ -7,54 +7,45 @@ export default function News() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const FOOTBALL_DATA_API_TOKEN = '735f4252933a4793bae38856151a8ac8';
+  // TheSportsDB Free API Key (1)
+  const THESPORTSDB_API_KEY = '1';
+  // PSL League ID
+  const PSL_LEAGUE_ID = '4802';
 
   useEffect(() => {
-    const fetchFootballData = async () => {
+    const fetchPSLMatches = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const originalApiUrl = 'https://api.football-data.org/v4/matches?status=SCHEDULED&limit=5';
+        // TheSportsDB API URL to fetch next 5 events for PSL
+        const apiUrl = `https://www.thesportsdb.com/api/v1/json/${THESPORTSDB_API_KEY}/eventsnextleague.php?id=${PSL_LEAGUE_ID}`;
+        // You could also use:
+        // `https://www.thesportsdb.com/api/v1/json/${THESPORTSDB_API_KEY}/eventspastleague.php?id=${PSL_LEAGUE_ID}` for past results
 
-        // --- UPDATED: Use api.allorigins.win as the CORS proxy ---
-        const apiUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(originalApiUrl)}`;
-        // --------------------------------------------------------
+        const response = await axios.get(apiUrl);
 
-        const response = await axios.get(apiUrl, {
-          headers: {
-            'X-Auth-Token': FOOTBALL_DATA_API_TOKEN
-          }
-        });
-
-        // The response structure from allorigins.win is slightly different:
-        // It wraps the actual API response inside a 'contents' field.
-        setMatches(response.data.contents.matches || []); // Access 'contents.matches'
+        // TheSportsDB response structure for events is usually `response.data.events`
+        // It might return null if no events are found, so handle that.
+        setMatches(response.data.events || []);
 
       } catch (err) {
-        console.error("Error fetching football data:", err);
-        if (err.response) {
-          console.error("API Response Error:", err.response.data);
-          setError(`API Error: ${err.response.status} - ${err.response.data.message || 'Unknown error'}`);
-        } else if (err.request) {
-          setError("Network Error: No response from API (CORS or network issue).");
-        } else {
-          setError("Request Setup Error: " + err.message);
-        }
+        console.error("Error fetching PSL data:", err);
+        setError("Failed to load PSL news. Please try again later.");
         setMatches([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchFootballData();
-  }, []);
+    fetchPSLMatches();
+  }, []); // Empty dependency array means this runs once on component mount
 
   if (loading) {
     return (
       <div className="news-page">
-        <h1>📰 Football News</h1>
-        <p>Loading latest match data...</p>
+        <h1>📰 PSL News</h1>
+        <p>Loading latest PSL match data...</p>
       </div>
     );
   }
@@ -62,29 +53,27 @@ export default function News() {
   if (error) {
     return (
       <div className="news-page">
-        <h1>📰 Football News</h1>
+        <h1>📰 PSL News</h1>
         <p style={{ color: 'red' }}>{error}</p>
-        <p>Please ensure your API token is correct and check the browser console for details.</p>
+        <p>Could not fetch PSL data. Check your internet connection or API settings.</p>
       </div>
     );
   }
 
   return (
     <div className="news-page">
-      <h1>📰 Upcoming Matches</h1>
+      <h1>📰 Upcoming PSL Matches</h1>
       {matches.length === 0 ? (
-        <p>No upcoming matches available at the moment. Please check back later or adjust your API query.</p>
+        <p>No upcoming PSL matches available at the moment. Please check back later.</p>
       ) : (
         <div className="match-list">
           {matches.map((match) => (
-            <div key={match.id} className="match-item">
-              <h3>{match.homeTeam.name} vs. {match.awayTeam.name}</h3>
-              <p>Competition: {match.competition.name}</p>
-              <p>Date: {new Date(match.utcDate).toLocaleString()}</p>
-              <p>Status: {match.status}</p>
-              {match.score && match.status === 'FINISHED' && (
-                <p>Score: {match.score.fullTime.home} - {match.score.fullTime.away}</p>
-              )}
+            <div key={match.idEvent} className="match-item"> {/* Use idEvent as key */}
+              <h3>{match.strHomeTeam} vs. {match.strAwayTeam}</h3>
+              <p>League: {match.strLeague}</p>
+              <p>Date: {match.dateEvent} {match.strTime} ({match.strEvent})</p>
+              {/* You might want to add more details based on available fields from TheSportsDB */}
+              {match.strVenue && <p>Venue: {match.strVenue}</p>}
             </div>
           ))}
         </div>
