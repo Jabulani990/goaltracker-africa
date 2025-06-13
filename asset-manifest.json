@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/goaltracker-africa/static/css/main.7fe34c53.css",
-    "main.js": "/goaltracker-africa/static/js/main.eafe8100.js",
+    "main.css": "/goaltracker-africa/static/css/main.7dfc071c.css",
+    "main.js": "/goaltracker-africa/static/js/main.e61b209f.js",
+    "static/media/trophy.png": "/goaltracker-africa/static/media/trophy.136c4c8030edc5f4e603.png",
     "index.html": "/goaltracker-africa/index.html",
-    "main.7fe34c53.css.map": "/goaltracker-africa/static/css/main.7fe34c53.css.map",
-    "main.eafe8100.js.map": "/goaltracker-africa/static/js/main.eafe8100.js.map"
+    "main.7dfc071c.css.map": "/goaltracker-africa/static/css/main.7dfc071c.css.map",
+    "main.e61b209f.js.map": "/goaltracker-africa/static/js/main.e61b209f.js.map"
   },
   "entrypoints": [
-    "static/css/main.7fe34c53.css",
-    "static/js/main.eafe8100.js"
+    "static/css/main.7dfc071c.css",
+    "static/js/main.e61b209f.js"
   ]
 }
