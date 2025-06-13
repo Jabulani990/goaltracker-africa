@@ -1,0 +1,132 @@
+/* src/styles/home.css */
+
+.home-page-content {
+  padding: 20px;
+  max-width: 1200px; /* Max width for content */
+  margin: 0 auto; /* Center content */
+}
+
+section {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+section h2 {
+  color: var(--primary); /* Uses your SA green */
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.welcome-section {
+  background-color: var(--primary); /* Green banner */
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.welcome-section h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.welcome-section .tagline {
+  font-size: 1.2em;
+  opacity: 0.9;
+}
+
+.live-scores-section {
+  /* Specific styles for this section */
+}
+
+.news-highlights-section,
+.featured-section {
+  /* Styles for these sections */
+}
+
+.news-placeholder,
+.teams-placeholder {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+
+.team-logos-placeholder {
+  margin-top: 20px;
+  font-size: 0.9em; /* Just for placeholder text */
+}
+
+.section-actions {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.btn-primary,
+.btn-secondary {
+  display: inline-block;
+  padding: 12px 25px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin: 0 10px;
+}
+
+.btn-primary {
+  background-color: var(--secondary); /* Red */
+  color: white;
+  border: 2px solid var(--secondary);
+}
+
+.btn-primary:hover {
+  background-color: #c02f28; /* Darker red */
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary); /* Green */
+  border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.cta-section {
+  background-color: #e6f7ed; /* Light green */
+  text-align: center;
+  color: var(--primary);
+}
+
+.cta-section h3 {
+  font-size: 1.8em;
+  margin-bottom: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .welcome-section h1 {
+    font-size: 2.5em;
+  }
+  section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-section h1 {
+    font-size: 2em;
+  }
+  .btn-primary, .btn-secondary {
+    display: block;
+    margin: 10px auto;
+  }
+}
